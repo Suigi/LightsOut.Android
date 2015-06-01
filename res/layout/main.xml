@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-        >
+              android:layout_height="fill_parent">
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World, MainActivity"
+            android:layout_alignParentTop="true"
+            android:text="Welcome to the Lights Out Demo"
+            android:id="@+id/TopText"
             />
-</LinearLayout>
+    <TextView
+            android:id="@+id/BottomText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="Icon made by http://www.freepik.com\nDownloaded from http://www.flaticon.com\nCC BY 3.0"
+            />
+    <TableLayout
+            android:layout_below="@id/TopText"
+            android:layout_above="@id/BottomText"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/LightsLayout"
+            android:stretchColumns="*" android:minHeight="300dp"
+            android:background="@android:color/darker_gray"
+            >
+    </TableLayout>
+</RelativeLayout>
 
