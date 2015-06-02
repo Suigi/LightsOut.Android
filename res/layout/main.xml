@@ -22,10 +22,11 @@
             android:layout_above="@id/BottomText"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
             android:id="@+id/LightsLayout"
             android:stretchColumns="*" android:minHeight="300dp"
             android:background="@android:color/darker_gray"
-            >
+            android:paddingLeft="10dp" android:paddingTop="5dp">
     </TableLayout>
 </RelativeLayout>
 

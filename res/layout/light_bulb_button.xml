@@ -6,6 +6,6 @@
     <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:adjustViewBounds="false"
                  android:cropToPadding="false" android:clickable="true"
-                 android:src="@drawable/ic_light_bulb"
+                 android:src="@drawable/ic_light_bulb_off"
             android:id="@+id/LightBulbButton"/>
 </LinearLayout>
