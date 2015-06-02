@@ -59,9 +59,6 @@ public class MainActivity extends Activity {
                         });
                         colorAnimation.start();
 
-//                        b.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.MULTIPLY);
-//                        b.setBackgroundTintMode(PorterDuff.Mode.LIGHTEN);
-
                     }
                 });
             }
