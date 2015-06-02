@@ -62,4 +62,11 @@ public class BoardTest extends TestCase {
         Assert.assertEquals(false, underTest.getLightState(6));
         Assert.assertEquals(true, underTest.getLightState(10));
     }
+
+    public void test_toggleLight_WhenOnRightEdge_ShouldNotToggleLightOnLeftEdgeDueToWrapping() throws Exception {
+        Board underTest = new Board(new int[]{6, 11});
+        underTest.toggleLight(4);
+
+        Assert.assertEquals(false, underTest.getLightState(5));
+     }
 }

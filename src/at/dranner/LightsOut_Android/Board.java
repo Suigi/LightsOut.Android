@@ -42,8 +42,11 @@ public class Board {
 
     public void toggleLight(int index){
         toggleLightWithoutSideEffect(index);
-        toggleLightWithoutSideEffect(index - 1);
-        toggleLightWithoutSideEffect(index + 1);
+        int column = index % COLUMN_COUNT;
+        if (column > 0)
+            toggleLightWithoutSideEffect(index - 1);
+        if (column < COLUMN_COUNT - 1)
+            toggleLightWithoutSideEffect(index + 1);
         toggleLightWithoutSideEffect(index - COLUMN_COUNT);
         toggleLightWithoutSideEffect(index + COLUMN_COUNT);
     }
