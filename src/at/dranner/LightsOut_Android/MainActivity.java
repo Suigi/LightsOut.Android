@@ -8,14 +8,14 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 public class MainActivity extends Activity {
 
     public static final int ROW_COUNT = 5;
     public static final int COLUMN_COUNT = 5;
-    public static final int ON_COLOR = Color.YELLOW;
-    public static final int OFF_COLOR = Color.LTGRAY;
     private Board mBoard;
 
     /**
@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
     }
 
     private int getLightBackgroundColor(boolean isOn){
-        return isOn ? ON_COLOR : OFF_COLOR;
+        return getResources().getColor(isOn ? R.color.bulb_on_background : R.color.bulb_off_background);
     }
 
     private void InitializeLight(final ImageButton button, final int index){
@@ -91,21 +91,4 @@ public class MainActivity extends Activity {
         });
         colorAnimation.start();
     }
-
-    /*
-                        final ImageButton b = (ImageButton) v;
-                        b.setImageResource(R.drawable.ic_light_bulb);
-
-                        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), OFF_COLOR, ON_COLOR);
-                        colorAnimation.setDuration(200);
-                        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                b.getBackground().setColorFilter((Integer) animation.getAnimatedValue(), PorterDuff.Mode.MULTIPLY);
-                            }
-                        });
-                        colorAnimation.start();
-
-
-     */
 }

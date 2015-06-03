@@ -1,7 +1,5 @@
 package at.dranner.LightsOut_Android;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 

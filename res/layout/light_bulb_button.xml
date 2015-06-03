@@ -7,5 +7,6 @@
                  android:adjustViewBounds="false"
                  android:cropToPadding="false" android:clickable="true"
                  android:src="@drawable/ic_light_bulb_off"
-            android:id="@+id/LightBulbButton"/>
+            android:id="@+id/LightBulbButton"
+            />
 </LinearLayout>
