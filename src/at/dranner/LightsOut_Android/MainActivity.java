@@ -1,22 +1,25 @@
 package at.dranner.LightsOut_Android;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends Activity {
 
-    public static final int ROW_COUNT = 5;
-    public static final int COLUMN_COUNT = 5;
-    private Board mBoard;
+    private ToggleStoringBoard mBoard;
+    private LightPropertyProvider mLightPropertyProvider;
+    private GridView mGameGrid;
+    private Random mRandom = new Random();
 
     /**
      * Called when the activity is first created.
@@ -26,69 +29,70 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mBoard = new Board(new int[]{0, 6, 12, 18, 24});
+        mBoard = new ToggleStoringBoard(new int[]{0, 6, 12, 18, 24});
+        mLightPropertyProvider = new LightPropertyProvider(this);
 
-        final LayoutInflater layoutInflater = getLayoutInflater();
-        final TableLayout lightsTableLayout = (TableLayout) findViewById(R.id.LightsLayout);
-
-        for (int rowIndex = 0; rowIndex < ROW_COUNT; rowIndex++) {
-            final TableRow tableRow = new TableRow(this);
-            tableRow.setWeightSum(1.0f);
-
-            for (int columnIndex = 0; columnIndex < COLUMN_COUNT; columnIndex++) {
-                final View buttonView = layoutInflater.inflate(R.layout.light_bulb_button, tableRow);
-                final ImageButton imageButton = (ImageButton) buttonView.findViewById(R.id.LightBulbButton);
-                final int bulbIndex = rowIndex * ROW_COUNT + columnIndex;
-                InitializeLight(imageButton, bulbIndex);
-
-                imageButton.setContentDescription(String.format("[%d,%d]", rowIndex, columnIndex));
-                imageButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mBoard.toggleLight(bulbIndex);
-                    }
-                });
+        mGameGrid = (GridView) findViewById(R.id.GameGrid);
+        mGameGrid.setAdapter(new GameGridAdapter(mBoard, getLayoutInflater(), mLightPropertyProvider));
+        mGameGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("Bulb", String.format("Clicked bulb with index: %d", position));
+                mBoard.toggleLight(position);
+                checkForLevelCompletion();
             }
+        });
 
-            lightsTableLayout.addView(tableRow);
-        }
-
-    }
-
-    private int getLightImageResource(boolean isOn){
-        return isOn ? R.drawable.ic_light_bulb : R.drawable.ic_light_bulb_off;
-    }
-
-    private int getLightBackgroundColor(boolean isOn){
-        return getResources().getColor(isOn ? R.color.bulb_on_background : R.color.bulb_off_background);
-    }
-
-    private void InitializeLight(final ImageButton button, final int index){
-        button.setId(index);
-        final boolean lightState = mBoard.getLightState(index);
-        button.setImageResource(getLightImageResource(lightState));
-        button.getBackground().setColorFilter(getLightBackgroundColor(lightState), PorterDuff.Mode.MULTIPLY);
-        mBoard.addLightToggledListener(index, new Board.LightToggledListener() {
+        mBoard.addLightToggledListener(new IBoard.LightToggledListener() {
             @Override
             public void onLightToggled(int index, boolean newState) {
-                transitionLight(button, newState);
+                Log.i("Bulb", String.format("Transitioning bulb with index: %d to: %b", index, newState));
+                transitionLight(index, newState);
             }
         });
     }
 
-    private void transitionLight(final ImageButton imageButton, boolean newState) {
-        imageButton.setImageResource(getLightImageResource(newState));
+    private void transitionLight(int index, boolean newState) {
+        View view = mGameGrid.getChildAt(index);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.LightBulbButton);
+        imageView.setImageResource(mLightPropertyProvider.getLightImageResource(newState));
 
-        final int fromColor = getLightBackgroundColor(!newState);
-        final int toColor = getLightBackgroundColor(newState);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
-        colorAnimation.setDuration(200);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                imageButton.getBackground().setColorFilter((Integer) animation.getAnimatedValue(), PorterDuff.Mode.MULTIPLY);
-            }
-        });
-        colorAnimation.start();
+        TransitionDrawable background = (TransitionDrawable) imageView.getBackground();
+        if (newState)
+            background.startTransition(200);
+        else
+            background.reverseTransition(200);
+    }
+
+    private void checkForLevelCompletion() {
+        if (mBoard.getNumberOfSwitchedOnLights() == 0){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("You did it!").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    shuffleBoard(5);
+                }
+            }).setCancelable(false).create().show();
+        }
+    }
+
+    private void shuffleBoard(int numberOfMoves) {
+        ArrayList<Integer> list = new ArrayList<>();
+        int max = Board.COLUMN_COUNT * Board.ROW_COUNT;
+        for (int i = 0; i < max; i++) {
+            list.add(i);
+        }
+        for (int i = max - 1; i > 0; i--) {
+            int j = mRandom.nextInt(i+1);
+            Integer tmp = list.get(i);
+            list.set(i, list.get(j));
+            list.set(j, tmp);
+        }
+        for (int i = 0; i < numberOfMoves; i++) {
+            mBoard.toggleLight(list.get(i));
+        }
+    }
+
+    private void updateMovesLeft() {
     }
 }

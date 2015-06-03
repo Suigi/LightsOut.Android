@@ -3,10 +3,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                 android:adjustViewBounds="false"
-                 android:cropToPadding="false" android:clickable="true"
+    <ImageView android:layout_width="match_parent" android:layout_height="wrap_content"
+                 android:adjustViewBounds="true"
+                 android:cropToPadding="false"
                  android:src="@drawable/ic_light_bulb_off"
+               android:scaleType="fitCenter"
+
+
             android:id="@+id/LightBulbButton"
+
+               android:background="@drawable/switch_on"
             />
 </LinearLayout>
